@@ -81,9 +81,7 @@ class SQLObject
     params.each do |method_name, value|
       raise "unknown attribute '#{method_name}'" unless self.class.columns.include?(method_name.to_sym)
 
-      method_name = ("#{method_name}=").to_sym
-
-      self.send(method_name, value)
+      self.send("#{method_name}=", value)
     end
 
   end
@@ -105,20 +103,33 @@ class SQLObject
     question_marks = question_marks.join(", ")
 
     DBConnection.execute(<<-SQL, *self.attribute_values)
-      INSERT
+      INSERT INTO
         #{self.class.table_name} (#{col_names})
       VALUES
         (#{question_marks})
     SQL
 
-    #self.id = QuestionDatabase.instance.last_insert_row_id
+    self.id = DBConnection.last_insert_row_id
   end
 
   def update
-    # ...
+    col_names = self.class.columns[1..-1].join(" = ?, ") + (" = ?")
+
+    DBConnection.execute(<<-SQL, *self.attribute_values.rotate)
+      UPDATE
+        #{self.class.table_name}
+      SET
+        #{col_names}
+      WHERE
+        id = ?
+    SQL
   end
 
   def save
-    # ...
+    if id
+      self.update
+    else
+      self.insert
+    end
   end
 end
