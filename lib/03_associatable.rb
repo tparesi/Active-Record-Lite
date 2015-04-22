@@ -20,6 +20,8 @@ class AssocOptions
 end
 
 class BelongsToOptions < AssocOptions
+  attr_reader :name, :options
+
   def initialize(name, options = {})
     @name = name
     defaults = {
@@ -28,9 +30,9 @@ class BelongsToOptions < AssocOptions
       primary_key: :id
     }
 
-    options = defaults.merge(options)
+    @options = defaults.merge(options)
 
-    options.each do |key, value|
+    @options.each do |key, value|
       self.send("#{key}=", value)
     end
   end
@@ -45,9 +47,9 @@ class HasManyOptions < AssocOptions
       primary_key: :id
     }
 
-    options = defaults.merge(options)
+    @options = defaults.merge(options)
 
-    options.each do |key, value|
+    @options.each do |key, value|
       self.send("#{key}=", value)
     end
   end
@@ -57,6 +59,7 @@ module Associatable
   # Phase IIIb
   def belongs_to(name, options = {})
     options = BelongsToOptions.new(name, options)
+    assoc_options[name] = options
 
     define_method(name) do
       foreign_key_name = options.send(:foreign_key)
@@ -82,8 +85,7 @@ module Associatable
 
   def assoc_options
     # Wait to implement this in Phase IVa. Modify `belongs_to`, too.
-
-    @assoc_options_hash = {}
+    @assoc_options_hash ||= {}
   end
 end
 
