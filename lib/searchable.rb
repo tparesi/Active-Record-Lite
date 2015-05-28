@@ -1,6 +1,3 @@
-require_relative 'db_connection'
-require_relative 'sql_object'
-
 module Searchable
   def where(params)
     where_line = []
@@ -26,8 +23,4 @@ module Searchable
       self.new(result)
     end
   end
-end
-
-class SQLObject
-  extend Searchable
 end

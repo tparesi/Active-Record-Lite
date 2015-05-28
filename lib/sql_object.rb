@@ -1,9 +1,8 @@
-require_relative 'db_connection'
-require_relative 'associatable'
 require 'active_support/inflector'
 
 class SQLObject
   extend Associatable
+  extend Searchable
 
   def self.columns
     columns = DBConnection.execute2(<<-SQL)

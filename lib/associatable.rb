@@ -1,5 +1,3 @@
-require_relative 'assoc_options'
-
 module Associatable
 
   def belongs_to(name, options = {})
