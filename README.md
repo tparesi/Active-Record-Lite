@@ -23,11 +23,13 @@ end
 
 cat = Cat.new(name: "Garfield", owner_id: 1)
 cat.save
+# save the record to the database
 
 cats = Cat.where(name: "Garfield")
 cats = Cat.where(name: "Garfield", owner_id: 1)
+# search single or multiple attributes
 
-garfield = cat.find(1)
+garfield = Cat.find(1) #=>  <#Cat:0x007f9ba9897d98 @name="Garfield", @owner_id=1>
 garfield.human #=>  <#Human:0x007f9ba9897d98 @first_name="Jon", @last_name="Arbuckle">
 
 ```
